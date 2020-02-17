@@ -1,4 +1,2 @@
-output/**
-!output
 
 asset/yolov3.weights
