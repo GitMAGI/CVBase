@@ -2,6 +2,7 @@ import os
 import time
 import cv2
 import numpy as np
+import requests
 
 print("Starting ...")
 print("OpenCV Version:", cv2.__version__)
@@ -31,6 +32,16 @@ yolov3_classes_file = "coco.names"
 yolov3_weights_fullfile = os.path.join(asset_path, yolov3_weights_file)
 yolov3_cfg_fullfile = os.path.join(asset_path, "darknet", "cfg", yolov3_cfg_file)
 yolov3_classes_fullfile = os.path.join(asset_path, "darknet", "data", yolov3_classes_file)
+
+if not os.path.exists(yolov3_weights_fullfile):
+  yolov3_classes_url = "https://pjreddie.com/media/files/yolov3.weights"
+  with requests.get(yolov3_classes_url, stream=True) as r:
+    r.raise_for_status()
+    with open(yolov3_weights_fullfile, 'wb') as f:
+      for chunk in r.iter_content(chunk_size=8192): 
+        if chunk: # filter out keep-alive new chunks
+          f.write(chunk)
+          # f.flush()
 
 # Detection
 img = cv2.imread(input_fullfile, -1)
@@ -87,7 +98,8 @@ for i in range(len(boxes)):
         label = str(classes[class_ids[i]]) + " ({0:.2f})".format(confidences[i])
         color = colors[class_ids[i]]
         cv2.rectangle(img, (x, y), (x + w, y + h), color, 1)
-        cv2.putText(img, label, (x, y - 1), font, 1, color, 1)
+        cv2.rectangle(img, (x,y-10), (x + w, y), color, cv2.FILLED)
+        cv2.putText(img, label, (x, y - 1), font, 0.6, (255,255,255), 1)
 #########################################
 
 cv2.imshow(input_file, img)
