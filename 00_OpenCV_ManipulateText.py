@@ -9,6 +9,8 @@ print("NumPy Version:", np.__version__)
 
 input_path = "input"
 output_path = "output"
+if not os.path.exists(output_path):
+    os.makedirs(output_path)
 
 input_file = "skidrow01.jpg"
 input_filename, input_fileextension = os.path.splitext(input_file)

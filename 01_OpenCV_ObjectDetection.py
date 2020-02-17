@@ -9,6 +9,8 @@ print("NumPy Version:", np.__version__)
 
 input_path = "input"
 output_path = "output"
+if not os.path.exists(output_path):
+    os.makedirs(output_path)
 asset_path = "asset"
 
 input_file = "traffic01.jpg"
