@@ -3,6 +3,7 @@ import time
 import cv2
 import numpy as np
 import requests
+from matplotlib import pyplot as plt
 import libs
 
 print("Starting ...")
@@ -15,7 +16,7 @@ if not os.path.exists(output_path):
     os.makedirs(output_path)
 asset_path = "asset"
 
-input_file = "traffic01.jpg"
+input_file = "20190827_215900.mp4"
 input_filename, input_fileextension = os.path.splitext(input_file)
 output_file = input_filename + "_Detection_" + time.strftime("%Y%m%d-%H%M%S") + input_fileextension
 
@@ -49,14 +50,15 @@ with open(yolov3_classes_fullfile, "r") as f:
 
 net = cv2.dnn.readNet(yolov3_weights_fullfile, yolov3_cfg_fullfile)
 
-img = cv2.imread(input_fullfile, -1)
+input_w = int(1920/5)
+input_h = int(1080/5)
+frames = libs.FFMPEGExtractJPGFromMP4(input_fullfile, input_w, input_h)
 
-img = libs.ObjectDetection(img, net, classes)
-
-cv2.imshow(input_file, img)
-key = cv2.waitKey(5000) & 0xFF
-if key == ord('s'):
-    cv2.imwrite(output_fullfile, img)
+for frame in frames:
+    img = cv2.imdecode(np.fromstring(frame, dtype = np.uint8), -1)    
+    #img = libs.ObjectDetection(img, net, classes)    
+    cv2.imshow(input_file, img)
+    cv2.waitKey(24)
 cv2.destroyAllWindows()
 
 print("Completed")
