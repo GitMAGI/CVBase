@@ -1,5 +1,6 @@
 import subprocess
 import re
+import time
 import cv2
 import numpy as np
 
@@ -41,7 +42,8 @@ def FFMPEGExtractJPGFromMP4(input_fullfile, input_w, input_h):
     return frames
 
 def ObjectDetection(img, net, classes):
-    
+    start_time = time.time()
+
     # Detection
     img = cv2.resize(img, None, fx=0.8, fy=0.8)
     height, width, channels = img.shape
@@ -93,4 +95,11 @@ def ObjectDetection(img, net, classes):
             cv2.rectangle(img, (x,y-10), (x + w, y), color, cv2.FILLED)
             cv2.putText(img, label, (x, y - 1), font, 0.6, (255,255,255), 1)
     
+    elapsed_time = time.time() - start_time
+    print(ElapsedTime2String(elapsed_time))
+
     return img
+
+def ElapsedTime2String(elapsed_time):
+    millis = int(round(elapsed_time * 1000))
+    return time.strftime("%H:%M:%S", time.gmtime(elapsed_time)) + str(".%03d" % millis)

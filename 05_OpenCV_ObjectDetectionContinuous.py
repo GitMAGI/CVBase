@@ -16,7 +16,8 @@ if not os.path.exists(output_path):
     os.makedirs(output_path)
 asset_path = "asset"
 
-input_file = "20190827_215900.mp4"
+#input_file = "20190827_215900.mp4"
+input_file = "traffic.mp4"
 input_filename, input_fileextension = os.path.splitext(input_file)
 output_file = input_filename + "_Detection_" + time.strftime("%Y%m%d-%H%M%S") + input_fileextension
 
@@ -56,9 +57,10 @@ frames = libs.FFMPEGExtractJPGFromMP4(input_fullfile, input_w, input_h)
 
 for frame in frames:
     img = cv2.imdecode(np.fromstring(frame, dtype = np.uint8), -1)    
-    #img = libs.ObjectDetection(img, net, classes)    
+    img = libs.ObjectDetection(img, net, classes)    
     cv2.imshow(input_file, img)
-    cv2.waitKey(24)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 cv2.destroyAllWindows()
 
 print("Completed")
