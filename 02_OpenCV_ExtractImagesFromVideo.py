@@ -14,8 +14,6 @@ input_fullfile = os.path.join(input_path, input_file)
 input_w = int(1920/5)
 input_h = int(1080/5)
 frames = libs.FFMPEGExtractJPGFromMP4(input_fullfile, input_w, input_h)
-print("Extracted %d jpg frames" % len(frames))
-
-
+print("Extracted {} frames".format(len(frames)))
 
 print("Completed")

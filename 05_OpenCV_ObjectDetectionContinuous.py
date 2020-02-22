@@ -19,7 +19,7 @@ asset_path = "asset"
 #input_file = "skidrow01.mp4"
 #input_file = "traffic01.mp4"
 #input_file = "video.mp4"
-input_file = "traffic0.mp4"
+input_file = "traffic02.mp4"
 input_filename, input_fileextension = os.path.splitext(input_file)
 output_file = input_filename + "_Detection_" + time.strftime("%Y%m%d-%H%M%S") + input_fileextension
 
@@ -56,6 +56,8 @@ net = cv2.dnn.readNet(yolov3_weights_fullfile, yolov3_cfg_fullfile)
 input_w = int(1920/5)
 input_h = int(1080/5)
 frames = libs.FFMPEGExtractJPGFromMP4(input_fullfile, input_w, input_h)
+
+print("Extracted {} frames".format(len(frames)))
 
 for frame in frames:
     img = cv2.imdecode(np.fromstring(frame, dtype = np.uint8), -1)    
