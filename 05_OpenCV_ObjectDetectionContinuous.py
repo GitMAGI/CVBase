@@ -16,9 +16,10 @@ if not os.path.exists(output_path):
     os.makedirs(output_path)
 asset_path = "asset"
 
-#input_file = "20190827_215900.mp4"
-#input_file = "traffic.mp4"
-input_file = "video.mp4"
+#input_file = "skidrow01.mp4"
+#input_file = "traffic01.mp4"
+#input_file = "video.mp4"
+input_file = "traffic0.mp4"
 input_filename, input_fileextension = os.path.splitext(input_file)
 output_file = input_filename + "_Detection_" + time.strftime("%Y%m%d-%H%M%S") + input_fileextension
 
