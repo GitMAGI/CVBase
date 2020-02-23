@@ -3,6 +3,8 @@ import re
 import time
 import cv2
 import numpy as np
+import os
+import requests
 
 def FFMPEGExtractJPGFromMP4(input_fullfile, input_w, input_h):
     # Command for extract a sequence of jpgs from a video file
@@ -103,3 +105,13 @@ def ObjectDetection(img, net, classes):
 def ElapsedTime2String(elapsed_time):
     millis = int(round(elapsed_time * 1000))
     return time.strftime("%H:%M:%S", time.gmtime(elapsed_time)) + str(".%03d" % millis)
+
+def DownloadIfNotExists(full_pathfile, url_file):
+    if not os.path.exists(full_pathfile):
+        with requests.get(url_file, stream=True) as r:
+            r.raise_for_status()
+            with open(full_pathfile, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192): 
+                    if chunk: # filter out keep-alive new chunks
+                        f.write(chunk)
+                        # f.flush()

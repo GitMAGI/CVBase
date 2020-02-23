@@ -33,15 +33,8 @@ yolov3_weights_fullfile = os.path.join(asset_path, yolov3_weights_file)
 yolov3_cfg_fullfile = os.path.join(asset_path, "darknet", "cfg", yolov3_cfg_file)
 yolov3_classes_fullfile = os.path.join(asset_path, "darknet", "data", yolov3_classes_file)
 
-if not os.path.exists(yolov3_weights_fullfile):
-  yolov3_classes_url = "https://pjreddie.com/media/files/yolov3.weights"
-  with requests.get(yolov3_classes_url, stream=True) as r:
-    r.raise_for_status()
-    with open(yolov3_weights_fullfile, 'wb') as f:
-      for chunk in r.iter_content(chunk_size=8192): 
-        if chunk: # filter out keep-alive new chunks
-          f.write(chunk)
-          # f.flush()
+yolov3_weights_url = "https://pjreddie.com/media/files/yolov3.weights"
+libs.DownloadIfNotExists(yolov3_weights_fullfile, yolov3_weights_url)
 
 # Detection
 img = cv2.imread(input_fullfile, -1)

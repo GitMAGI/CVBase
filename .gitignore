@@ -1,3 +1,6 @@
+.vs/*
+.vscode/*
+
 !output/
 output/**
 __pycache__
