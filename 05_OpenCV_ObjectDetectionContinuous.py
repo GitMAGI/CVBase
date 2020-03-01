@@ -52,9 +52,14 @@ frames = libs.FFMPEGExtractJPGFromMP4(input_fullfile, input_w, input_h)
 
 print("Extracted {} frames".format(len(frames)))
 
+blob_scale_factor = 0.00392
+blob_dim = (416, 416)
+confidence_limit = .5
+
 for frame in frames:
-    img = cv2.imdecode(np.fromstring(frame, dtype = np.uint8), -1)    
-    img = libs.ObjectDetection(img, net, classes)    
+    img = cv2.imdecode(np.frombuffer(frame, dtype = np.uint8), -1)    
+    #img = libs.ObjectDetection(img, blob_dim, blob_scale_factor, net, classes, confidence_limit)
+    img = libs.ObjectDetectionDev(img, blob_dim, blob_scale_factor, net, classes, confidence_limit)
     cv2.imshow(input_file, img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

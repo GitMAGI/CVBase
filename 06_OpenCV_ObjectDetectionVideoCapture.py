@@ -16,8 +16,8 @@ if not os.path.exists(output_path):
     os.makedirs(output_path)
 asset_path = "asset"
 
-#input_file = "20190827_215900.mp4"
-input_file = "traffic.mp4"
+#input_file = "skidrow01.mp4"
+input_file = "traffic02.mp4"
 input_filename, input_fileextension = os.path.splitext(input_file)
 output_file = input_filename + "_Detection_" + time.strftime("%Y%m%d-%H%M%S") + input_fileextension
 
@@ -44,15 +44,18 @@ with open(yolov3_classes_fullfile, "r") as f:
 
 net = cv2.dnn.readNet(yolov3_weights_fullfile, yolov3_cfg_fullfile)
 
+blob_scale_factor = 0.00392
+blob_dim = (416, 416)
+confidence_limit = .5
+
 cap = cv2.VideoCapture(input_fullfile)
 while(cap.isOpened()):
     ret, frame = cap.read()
     img = frame
-    img = libs.ObjectDetection(img, net, classes)    
+    img = libs.ObjectDetection(img, blob_dim, blob_scale_factor, net, classes, confidence_limit) 
     cv2.imshow(input_file, img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-
 cap.release()
 cv2.destroyAllWindows()
 

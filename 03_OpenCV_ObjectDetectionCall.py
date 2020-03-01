@@ -36,6 +36,10 @@ yolov3_classes_fullfile = os.path.join(asset_path, "darknet", "data", yolov3_cla
 yolov3_weights_url = "https://pjreddie.com/media/files/yolov3.weights"
 libs.DownloadIfNotExists(yolov3_weights_fullfile, yolov3_weights_url)
 
+blob_scale_factor = 0.00392
+blob_dim = (416, 416)
+confidence_limit = .5
+
 classes = []
 with open(yolov3_classes_fullfile, "r") as f:
   classes = [line.strip() for line in f.readlines()]
@@ -44,7 +48,7 @@ net = cv2.dnn.readNet(yolov3_weights_fullfile, yolov3_cfg_fullfile)
 
 img = cv2.imread(input_fullfile, -1)
 
-img = libs.ObjectDetection(img, net, classes)
+img = libs.ObjectDetection(img, blob_dim, blob_scale_factor, net, classes, confidence_limit)
 
 cv2.imshow(input_file, img)
 key = cv2.waitKey(5000) & 0xFF
