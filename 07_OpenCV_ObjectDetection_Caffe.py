@@ -5,6 +5,7 @@ import numpy as np
 import requests
 from matplotlib import pyplot as plt
 import libs
+import objectDetections as oDs
 
 print("Starting ...")
 print("OpenCV Version:", cv2.__version__)
@@ -46,12 +47,13 @@ prototxt_fullfile = os.path.join(asset_path, prototxt_file)
 caffe_model_fullfile = os.path.join(asset_path, caffe_model_file)
 
 classes = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
+colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
 net = cv2.dnn.readNetFromCaffe(prototxt_fullfile, caffe_model_fullfile)
 
 for frame in frames:
-    img = cv2.imdecode(np.frombuffer(frame, dtype = np.uint8), -1)    
-    img = libs.ObjectDetectionAdvanced(img, blob_dim, blob_scale_factor, blob_mean, net, classes, confidence_limit)
+    img = cv2.imdecode(np.frombuffer(frame, dtype = np.uint8), -1)
+    img = oDs.SSD_MobileNet(img, blob_dim, blob_scale_factor, blob_mean, net, classes, colors, confidence_limit, True)
     cv2.imshow(input_file, img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

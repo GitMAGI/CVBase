@@ -5,6 +5,7 @@ import numpy as np
 import requests
 from matplotlib import pyplot as plt
 import libs
+import objectDetections as oDs
 
 print("Starting ...")
 print("OpenCV Version:", cv2.__version__)
@@ -43,8 +44,12 @@ libs.DownloadIfNotExists(yolov3_weights_fullfile, yolov3_weights_url)
 classes = []
 with open(yolov3_classes_fullfile, "r") as f:
   classes = [line.strip() for line in f.readlines()]
+colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
-net = cv2.dnn.readNet(yolov3_weights_fullfile, yolov3_cfg_fullfile)
+#net = cv2.dnn.readNet(yolov3_weights_fullfile, yolov3_cfg_fullfile)
+net = cv2.dnn.readNetFromDarknet(yolov3_cfg_fullfile, yolov3_weights_fullfile)
+layer_names = net.getLayerNames()
+output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
 input_w = int(1920/5)
 input_h = int(1080/5)
@@ -58,8 +63,7 @@ confidence_limit = .5
 
 for frame in frames:
     img = cv2.imdecode(np.frombuffer(frame, dtype = np.uint8), -1)    
-    #img = libs.ObjectDetection(img, blob_dim, blob_scale_factor, net, classes, confidence_limit)
-    img = libs.ObjectDetectionDev(img, blob_dim, blob_scale_factor, net, classes, confidence_limit)
+    img = oDs.YOLOv3_Generic(img, blob_dim, blob_scale_factor, net, output_layers, classes, colors, confidence_limit, True)
     cv2.imshow(input_file, img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
