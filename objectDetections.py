@@ -39,7 +39,7 @@ def SSD_MobileNet(img, blob_size, blob_scaling_factor, blob_mean, net, classes, 
             label = "{}: {:.2f}%".format(classes[idx], confidence * 100)
             cv2.rectangle(img, (startX, startY), (endX, endY), colors[idx], 2)
             y = startY - 15 if startY - 15 > 15 else startY + 15
-            cv2.putText(img, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, colors[idx], 2)
+            cv2.putText(img, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, colors[idx], 1)
     
     elapsed_time = time.time() - start_time
     if logger:
@@ -49,7 +49,7 @@ def SSD_MobileNet(img, blob_size, blob_scaling_factor, blob_mean, net, classes, 
 
 # YOLO v3 (You only look once)
 # You use a generic Classifier???
-def YOLOv3_Generic(img, blob_size, blob_scale_factor, net, layer_names, classes, colors, confidence_limit = .5, logger = False):    
+def YOLOv3_Generic(img, blob_size, blob_scale_factor, net, layer_names, classes, colors, confidence_limit = .5, logger = False):
     start_time = time.time()
 
     (H, W) = img.shape[:2]
@@ -123,7 +123,7 @@ def YOLOv3_Generic(img, blob_size, blob_scale_factor, net, layer_names, classes,
             color = [int(c) for c in colors[classIDs[i]]]
             cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
             text = "{}: {:.4f}".format(classes[classIDs[i]], confidences[i])
-            cv2.putText(img, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            cv2.putText(img, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
 
     elapsed_time = time.time() - start_time
     if logger:

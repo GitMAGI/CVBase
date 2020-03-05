@@ -4,6 +4,7 @@ import os
 import imutils
 import time
 import libs
+import objectDetections as oDs
 
 print("Starting ...")
 print("OpenCV Version:", cv2.__version__)
@@ -32,6 +33,28 @@ print("OpenCV VideoCapture started!")
 fps = cap.get(cv2.CAP_PROP_FPS)
 print("OpenCV VideoCapture FPS:", fps)
 
+# LOAD the Net -- Begin
+yolov3_weights_file = "yolov3.weights"
+yolov3_cfg_file = "yolov3.cfg"
+yolov3_classes_file = "coco.names"
+yolov3_weights_fullfile = os.path.join(asset_path, yolov3_weights_file)
+yolov3_cfg_fullfile = os.path.join(asset_path, "darknet", "cfg", yolov3_cfg_file)
+yolov3_classes_fullfile = os.path.join(asset_path, "darknet", "data", yolov3_classes_file)
+yolov3_weights_url = "https://pjreddie.com/media/files/yolov3.weights"
+libs.DownloadIfNotExists(yolov3_weights_fullfile, yolov3_weights_url)
+blob_scale_factor = 1 / 255.0
+blob_dim = (416, 416)
+confidence_limit = .5
+classes = []
+with open(yolov3_classes_fullfile, "r") as f:
+  classes = [line.strip() for line in f.readlines()]
+colors = np.random.uniform(0, 255, size=(len(classes), 3))
+#net = cv2.dnn.readNet(yolov3_weights_fullfile, yolov3_cfg_fullfile)
+net = cv2.dnn.readNetFromDarknet(yolov3_cfg_fullfile, yolov3_weights_fullfile)
+layer_names = net.getLayerNames()
+output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+# LOAD the Net -- End
+
 counter = 0
 fps_start_time = time.time()
 while True:
@@ -41,6 +64,8 @@ while True:
     if not ret: #If ret is None means we reached the end of the stream!
         break
     counter += 1
+
+    frame = oDs.YOLOv3_Generic(frame, blob_dim, blob_scale_factor, net, output_layers, classes, colors, confidence_limit, False)
     
     elapsed_time = time.time() - start_time
     #print(libs.ElapsedTime2String(elapsed_time))

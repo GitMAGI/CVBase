@@ -4,6 +4,7 @@ import os
 import imutils
 import time
 import libs
+import objectDetections as oDs
 
 print("Starting ...")
 print("OpenCV Version:", cv2.__version__)
@@ -32,6 +33,20 @@ print("OpenCV VideoCapture started!")
 fps = cap.get(cv2.CAP_PROP_FPS)
 print("OpenCV VideoCapture FPS:", fps)
 
+# LOAD the Net -- Begin
+blob_scale_factor = 0.007843
+blob_dim = (416, 416)
+blob_mean = 127.5
+confidence_limit = .5
+prototxt_file = "MobileNetSSD_deploy.prototxt.txt"
+caffe_model_file = "MobileNetSSD_deploy.caffemodel"
+prototxt_fullfile = os.path.join(asset_path, prototxt_file)
+caffe_model_fullfile = os.path.join(asset_path, caffe_model_file)
+classes = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
+colors = np.random.uniform(0, 255, size=(len(classes), 3))
+net = cv2.dnn.readNetFromCaffe(prototxt_fullfile, caffe_model_fullfile)
+# LOAD the Net -- End
+
 counter = 0
 fps_start_time = time.time()
 while True:
@@ -42,6 +57,8 @@ while True:
         break
     counter += 1
     
+    frame = oDs.SSD_MobileNet(frame, blob_dim, blob_scale_factor, blob_mean, net, classes, colors, confidence_limit, False)
+
     elapsed_time = time.time() - start_time
     #print(libs.ElapsedTime2String(elapsed_time))
 

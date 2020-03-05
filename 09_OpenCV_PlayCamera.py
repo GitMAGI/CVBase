@@ -16,12 +16,15 @@ print("OpenCV VideoCapture started!")
 fps = cap.get(cv2.CAP_PROP_FPS)
 print("OpenCV VideoCapture FPS:", fps)
 
+counter = 0
+fps_start_time = time.time()
 while True:
     start_time = time.time()
 
     ret, frame = cap.read()
     if not ret: #If ret is None means we reached the end of the stream!
         break
+    counter += 1
     
     elapsed_time = time.time() - start_time
     #print(libs.ElapsedTime2String(elapsed_time))
@@ -36,6 +39,8 @@ while True:
     # if the `q` key was pressed, break from the loop
     if key == ord("q"):
         break
+fps_end_time = time.time()
+print("OpenCV VideoCapture Avg FPS: %.1f" % (counter / (fps_end_time - fps_start_time)))
 
 cap.release()
 cv2.destroyAllWindows()
